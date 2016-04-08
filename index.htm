@@ -36,6 +36,18 @@ subdomains:['mt0','mt1','mt2','mt3']
     url: 'http://arcgis.dvrpc.org/arcgis/rest/services/Planning/LandUse2010/MapServer',
     opacity:.5 
   }).addTo(map);
+
+  var landuse = L.esri.dynamicMapLayer({
+    url: 'http://arcgis.dvrpc.org/arcgis/rest/services/Planning/LandUse2010/MapServer'
+  }).addTo(map);
+
+  landuse.bindPopup(function (error, featureCollection) {
+    if(error || featureCollection.features.length === 0) {
+      return false;
+    } else {
+      return 'Land Use: ' + featureCollection.features[0].properties.LU_LABEL;
+    }
+  });
 </script>
 
 </body>
