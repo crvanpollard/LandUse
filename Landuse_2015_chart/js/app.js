@@ -36,7 +36,7 @@ layer.setStyle({
     }			
 }
 
-function resetHighlight(e) {
+function resetHighlight() {
 	  var layer = e.target;                        
 	  //return layer to back of map
 	  if (!L.Browser.ie && !L.Browser.opera) {
@@ -122,7 +122,7 @@ lsoaLayer.once('mouseover', function(e){        //create eventListener on mouseo
 });
 
     function highlightPoly(e) {
-                resetHighlight(e);
+                resetHighlight();
                 var layer = e.target;
                 var layersearch = e.feature;   
                 if (layersearch===undefined){  
