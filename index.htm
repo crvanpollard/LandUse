@@ -14,11 +14,26 @@
   <style>
     body { margin:0; padding:0; }
     #map { position: absolute; top:0; bottom:0; right:0; left:0; }
+    #legendBox {
+    position: absolute;
+    background:white;
+    height:550px;
+    width:300px;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 10px 20px;
+    box-shadow: 10px 10px 65px 0px rgba(0, 0, 0, 0.75);
+    }
   </style>
 </head>
 <body>
 
-<div id="map"></div>
+<div id="map">
+<div id="legendBox"></div>
+</div>
 
 <script>
    var map = L.map('map', {
