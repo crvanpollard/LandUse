@@ -7,10 +7,14 @@
   <!-- Load Leaflet from CDN-->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/leaflet/1.0.0-beta.2/leaflet.css" />
   <script src="https://cdn.jsdelivr.net/leaflet/1.0.0-beta.2/leaflet.js"></script>
+    <!-- Core CSS -->
+  <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+   
 
   <!-- Load Esri Leaflet from CDN -->
    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.8/esri-leaflet.js"></script>
   <script src="http://code.highcharts.com/highcharts.js"></script>  
   <script src="js/numeral.js"></script>
@@ -22,7 +26,7 @@
     #legendBox {
     position: absolute;
     background:white;
-    height:410px;
+    height:450px;
     width:300px;
     top: 20px;
     right: 20px;
@@ -32,6 +36,17 @@
   /*  padding: 10px 20px; */
     box-shadow: 10px 10px 65px 0px rgba(0, 0, 0, 0.75);
     }
+    .hide {
+    display: none;
+    
+    }
+   .leaflet-container a {
+    color: #fff;
+}
+    #target{
+      margin-left:75px;
+
+    }
   </style>
 </head>
 <body>
@@ -40,6 +55,8 @@
 <div id="legendBox">
 <div id="infosidebar"style="padding:10px"></div>
 <div id="Population"></div>    
+<!-- Contextual button for informational alert messages -->
+<a href="http://dvrpc.dvrpcgis.opendata.arcgis.com/datasets/c614fd0ae78a4aeaad319ad2e1007cbf_0?uiTab=table&orderByFields=MUN_NAME+ASC&where=MUN_NAME+like+'%25Upper+Merion%25'&filterByExtent=true&geometry=-75.613%2C40.049%2C-75.152%2C40.128" role="button" class="btn btn-primary hide" id="target" target="_new">Download Dataset</a>
 </div>
 </div>
 
@@ -123,6 +140,7 @@
   map.addLayer(lsoaLayer);
   
   function populatepie(e) {
+                $('#target').removeClass("hide");
                 resetHighlight(e);
                 var layer = e.target;
                 var layersearch = e.feature;
@@ -145,7 +163,7 @@
 
   document.getElementById('infosidebar').innerHTML = content;
           
-  Population = [props.Single_fam,props.Multi,props.Industrial,props.Transporta,props.Utility,props.Commercial,props.Comm_ser,props.Military,props.Recreation,props.Agr_bog,props.Wooded,props.Vacant,props.Water];
+  Population = [props.Single_fam,props.Multi,props.Commercial,props.Comm_ser,props.Industrial,props.Transporta,props.Utility,props.Mining,props.Military,props.Recreation,props.Agr_bog,props.Wooded,props.Vacant,props.Water];
   updateCtyChart(Population);   
           
   function updateCtyChart(Values){
@@ -159,7 +177,7 @@
                 plotShadow: true,
                 height: 350,
                 width: 280,
-                colors: ['#FFFF00', '#FFA77F','#AA66CD','#686868','#FF0000','#BEE8FF','#0084A8','#E6E600','#D7D79E','#A80000','#4CE600','#A5F57A','#00C5FF']
+                colors: ['#FFFF00', '#FFA77F','#FF0000','#BEE8FF','#AA66CD','#686868','#FFBEBE','#A80000','#0084A8','#E6E600','#D7D79E','#4CE600','#A5F57A','#00C5FF']
         /*   events: {
             load: function(event) {
               var total = 0;
@@ -204,7 +222,7 @@
             },
           legend: {
              title: {
-                text: '<span style="text-align:center;font-size: 9px; color: #666; font-weight: normal">Landuse Categories</span>',
+                text: '<span style="text-align:center;font-size: 9px; color: #666; font-weight: normal">DVRPC 2015 Landuse Categories</span>',
                 style: {
                     fontStyle: 'italic'
                 }
@@ -224,11 +242,11 @@
                name:'Total',
                id: 'Values',
                innerSize: '60%',
-               colors: ['#FFFF00', '#FFA77F','#AA66CD','#686868','#FFBEBE','#FF0000','#BEE8FF','#0084A8','#E6E600','#D7D79E','#4CE600','#A5F57A','#00C5FF'],
+               colors: ['#FFFF00', '#FFA77F','#FF0000','#BEE8FF','#AA66CD','#686868','#FFBEBE','#A80000','#0084A8','#E6E600','#D7D79E','#4CE600','#A5F57A','#00C5FF'],
                data: []
             }]
     };    
-    var Labels = ["Single Family", "Multi Family","Industrial","Transportation","Utility", "Commercial","Community Serive","Military","Recreation", "Agricultural","Wooded","Vacant","Water"],
+    var Labels = ["Single Family", "Multi Family","Commercial","Community Services","Industrial","Transportation","Utility","Mining","Military","Recreation", "Agricultural","Wooded","Vacant","Water"],
     counData = [];
     for (var i = 0; i < Values.length; i++){
                 counData.push({
