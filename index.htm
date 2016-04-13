@@ -44,7 +44,6 @@
 </div>
 
 <script>
-
    var map = L.map('map', {
             zoom: 9,
             minZoom:8,
@@ -73,15 +72,12 @@
       return 'Land Use: ' + featureCollection.features[0].properties.LU_LABEL;
     }
   }); */
-
-
    ///////Load MAP JSONS
 
     var lsoaLayer;
     
     function highlightFeature(e) {
       var layer = e.target;
-
       layer.setStyle({
         weight: 3,
         color: 'red',
@@ -91,27 +87,16 @@
 
     function resetHighlight(e) {
      lsoaLayer.resetStyle(e.target);
-    //  info.update();
     }
 
     function zoomToFeature(e) {
       map.fitBounds(e.target.getBounds());
     }
 
-    function clickFeature(e) {
-    var layer = e.target;
-        lsoaLayer.setStyle({
-        weight: 3,
-        color: '#666',
-        fillOpacity: 0.7
-    })
-      }
-
     function onEachFeature(feature, layer) {
       layer.on({
         mouseover: highlightFeature,
         mouseout: resetHighlight,
-        click: clickFeature,
         click: populatepie
     //   click: zoomToFeature
       });
@@ -138,29 +123,32 @@
   map.addLayer(lsoaLayer);
   
   function populatepie(e) {
-              //  resetHighlight();
+                resetHighlight(e);
                 var layer = e.target;
-                var props = layer.feature.properties;
+                var layersearch = e.feature;
+                var props = layer.feature.properties;   
+                if (layersearch===undefined){  
+                    layer.setStyle({ 
+                    weight: 3,color:"#00ffff"
+                    });
+                    
+                } else {                        
+                    e.setStyle({ 
+                    weight: 18,color:"#00ffff"
+                    });
+                    var props = layersearch.properties;
+                }          
+          var content = "<div style='text-align:center;width:250px'><b>"+numeral(props.Total).format('0,0')+" total acres</b> within "+(props.MUN_NAME)
+          +"</br>"+(props.CO_NAME)+" County, "+(props.STATE_NAME)
+          +"</div>"   
+          ;
+
+  document.getElementById('infosidebar').innerHTML = content;
           
-            var content = "<div style='text-align:center;width:250px'><b>"+numeral(props.Total).format('0,0')+" total acres</b> within "+(props.MUN_NAME)
-                          +"</br>"+(props.CO_NAME)+" County, "+(props.STATE_NAME)
-                          +"</div>"   
-                          ;
-        
-            document.getElementById('infosidebar').innerHTML = content;
-            Population = [props.Single_fam,props.Multi,props.Industrial,props.Transporta,props.Utility,props.Commercial,props.Comm_ser,props.Military,props.Recreation,props.Agr_bog,props.Wooded,props.Vacant,props.Water];
-          updateCtyChart(Population);
-   /*         };
-   
-      function populatepie(e) {
-          var layer = e.target;
-          var props = layer.feature.properties,
-          Population = [props.Single_fam,props.Multi,props.Industrial,props.Transporta,props.Utility,props.Commercial,props.Comm_ser,props.Military,props.Recreation,props.Agr_bog,props.Wooded,props.Vacant,props.Water];
-          updateCtyChart(Population);
-  */        
-//    }    
+  Population = [props.Single_fam,props.Multi,props.Industrial,props.Transporta,props.Utility,props.Commercial,props.Comm_ser,props.Military,props.Recreation,props.Agr_bog,props.Wooded,props.Vacant,props.Water];
+  updateCtyChart(Population);   
           
-    function updateCtyChart(Values){
+  function updateCtyChart(Values){
     var CtyChart = {
 
             chart: {
