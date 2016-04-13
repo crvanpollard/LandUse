@@ -36,10 +36,6 @@
   /*  padding: 10px 20px; */
     box-shadow: 10px 10px 65px 0px rgba(0, 0, 0, 0.75);
     }
-    
-   .leaflet-container a {
-    color: #fff;
-    }
     #download_button{
       margin-left:80px;
     }
@@ -157,7 +153,7 @@
           +"</div>"   
           ;
 
-          var content2 = "<a class='btn btn-primary' role='button' href='http://dvrpc.dvrpcgis.opendata.arcgis.com/datasets/c614fd0ae78a4aeaad319ad2e1007cbf_0?uiTab=table&where=MUN_NAME&#43like&#43"+
+          var content2 = "<a style='color:#fff;'class='btn btn-primary' role='button' href='http://dvrpc.dvrpcgis.opendata.arcgis.com/datasets/c614fd0ae78a4aeaad319ad2e1007cbf_0?uiTab=table&where=MUN_NAME&#43like&#43"+
           (props.MUN_NAME)+"&filterByExtent=false&geometry="+(props.MIN_Y)+"%2C"+(props.MIN_X)+"%2C"+ (props.MAX_Y)+"%2C"+(props.MAX_X)+"' target='_blank'>Download Dataset</a>" 
           ;
 
