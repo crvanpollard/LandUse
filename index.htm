@@ -27,7 +27,7 @@
     position: absolute;
     background:white;
     height:450px;
-    width:300px;
+    width:310px;
     top: 20px;
     right: 20px;
     z-index: 1001;
@@ -36,16 +36,12 @@
   /*  padding: 10px 20px; */
     box-shadow: 10px 10px 65px 0px rgba(0, 0, 0, 0.75);
     }
-    .hide {
-    display: none;
     
-    }
    .leaflet-container a {
     color: #fff;
-}
-    #target{
-      margin-left:75px;
-
+    }
+    #download_button{
+      margin-left:80px;
     }
   </style>
 </head>
@@ -56,7 +52,7 @@
 <div id="infosidebar"style="padding:10px"></div>
 <div id="Population"></div>    
 <!-- Contextual button for informational alert messages -->
-<a href="http://dvrpc.dvrpcgis.opendata.arcgis.com/datasets/c614fd0ae78a4aeaad319ad2e1007cbf_0?uiTab=table&orderByFields=MUN_NAME+ASC&where=MUN_NAME+like+'%25Upper+Merion%25'&filterByExtent=true&geometry=-75.613%2C40.049%2C-75.152%2C40.128" role="button" class="btn btn-primary hide" id="target" target="_new">Download Dataset</a>
+<div id="download_button"></div>
 </div>
 </div>
 
@@ -156,12 +152,17 @@
                     });
                     var props = layersearch.properties;
                 }          
-          var content = "<div style='text-align:center;width:280px'><b>"+numeral(props.Total).format('0,0')+" total acres</b> within "+(props.MUN_NAME)
+          var content = "<div style='text-align:center;width:290px'><b>"+numeral(props.Total).format('0,0')+" total acres</b> within "+(props.MUN_NAME)
           +"</br>"+(props.CO_NAME)+" County, "+(props.STATE_NAME)
           +"</div>"   
           ;
 
+          var content2 = "<a class='btn btn-primary' role='button' href='http://dvrpc.dvrpcgis.opendata.arcgis.com/datasets/c614fd0ae78a4aeaad319ad2e1007cbf_0?uiTab=table&where=MUN_NAME&#43like&#43"+
+          (props.MUN_NAME)+"&filterByExtent=false&geometry="+(props.MIN_Y)+"%2C"+(props.MIN_X)+"%2C"+ (props.MAX_Y)+"%2C"+(props.MAX_X)+"' target='_blank'>Download Dataset</a>" 
+          ;
+
   document.getElementById('infosidebar').innerHTML = content;
+  document.getElementById('download_button').innerHTML = content2;
           
   Population = [props.Single_fam,props.Multi,props.Commercial,props.Comm_ser,props.Industrial,props.Transporta,props.Utility,props.Mining,props.Military,props.Recreation,props.Agr_bog,props.Wooded,props.Vacant,props.Water];
   updateCtyChart(Population);   
@@ -176,7 +177,7 @@
                 plotBorderWidth: 0, //null,
                 plotShadow: true,
                 height: 350,
-                width: 280,
+                width: 290,
                 colors: ['#FFFF00', '#FFA77F','#FF0000','#BEE8FF','#AA66CD','#686868','#FFBEBE','#A80000','#0084A8','#E6E600','#D7D79E','#4CE600','#A5F57A','#00C5FF']
         /*   events: {
             load: function(event) {
