@@ -9,7 +9,7 @@
   <script src="https://cdn.jsdelivr.net/leaflet/1.0.0-beta.2/leaflet.js"></script>
     <!-- Core CSS -->
   <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-   
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
   <!-- Load Esri Leaflet from CDN -->
    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
@@ -26,8 +26,8 @@
     #legendBox {
     position: absolute;
     background:white;
-    height:450px;
-    width:310px;
+    height:250px;
+    width:610px;
     top: 20px;
     right: 20px;
     z-index: 1001;
@@ -39,16 +39,63 @@
     #download_button{
       margin-left:80px;
     }
+    .legend-icons {
+    display: inline-block;
+    line-height: 25px;
+    width: 25px;
+    height: 15px;
+    text-align: center;
+ /*   vertical-align: middle; */
+   /* margin: 0px 6px 0px 0px; */
+    }
+    .civic{
+      color: #FFFF00;
+    }
+    .cultural{
+      color: #FFA77F;
+    }
+    .fb{
+      color: #FF0000;
+    }
+    .gafo{
+      color: #BEE8FF;
+    }
+    .ngs{
+      color: #AA66CD;
+    }
+    .office{
+      color: #686868;
+    }
+    .res{
+      color: #FFBEBE;
+    }
+    .vacant{
+      color: #A80000;
+    }
+        
   </style>
 </head>
 <body>
 
 <div id="map">
 <div id="legendBox">
-<div id="infosidebar"style="padding:10px"></div>
-<div id="Population"></div>    
+<!-- <div id="infosidebar"style="padding:10px"></div> -->
+<span>
+<div id="Chart1" style="display:inline-block;"></div>    
+<div id="Chart2" style="display:inline-block;"></div> 
+</span>
+<span>
+  <i class="fa fa-circle legend-icons civic"></i>Civic
+  <i class="fa fa-circle legend-icons cultural"></i>Cultural
+  <i class="fa fa-circle legend-icons fb"></i>Food & Beverage
+  <i class="fa fa-circle legend-icons gafo"></i>GAFO
+  <i class="fa fa-circle legend-icons ngs"></i>NG & S
+  <i class="fa fa-circle legend-icons office"></i>Office
+  <i class="fa fa-circle legend-icons res"></i>Residential
+  <i class="fa fa-circle legend-icons vacant"></i>Vacant 
+</span>
 <!-- Contextual button for informational alert messages -->
-<div id="download_button"></div>
+<!-- <div id="download_button"></div> -->
 </div>
 </div>
 
@@ -65,10 +112,6 @@
   subdomains:['mt0','mt1','mt2','mt3']
   }).addTo(map);
 
-  L.esri.tiledMapLayer({
-    url: 'http://arcgis.dvrpc.org/arcgis/rest/services/Planning/LandUse2010/MapServer',
-    opacity:.5 
-  }).addTo(map);
 
  /* var landuse = L.esri.dynamicMapLayer({
     url: 'http://arcgis.dvrpc.org/arcgis/rest/services/Planning/LandUse2010/MapServer'
@@ -126,7 +169,7 @@
    onEachFeature: onEachFeature
   });
 
-  $.getJSON('data/landuse.js', function (data) {
+  $.getJSON('data/districts.js', function (data) {
       lsoaLayer.addData(data);
         });
   map.addLayer(lsoaLayer);
@@ -148,113 +191,173 @@
                     });
                     var props = layersearch.properties;
                 }          
-          var content = "<div style='text-align:center;width:290px'><b>"+numeral(props.Total).format('0,0')+" total acres</b> within "+(props.MUN_NAME)
-          +"</br>"+(props.CO_NAME)+" County, "+(props.STATE_NAME)
+          var content = "<div style='text-align:center;width:290px'><b>"+numeral(props.Total).format('0,0')+" total acres</b> within "+(props.District)
+          +"</br>"+(props.COUNTY)+" County, "+(props.STATE)
           +"</div>"   
           ;
 
-          var content2 = "<a style='color:#fff;'class='btn btn-primary' role='button' href='http://dvrpc.dvrpcgis.opendata.arcgis.com/datasets/c614fd0ae78a4aeaad319ad2e1007cbf_0?uiTab=table&where=MUN_NAME&#43like&#43"+
+       /*   var content2 = "<a style='color:#fff;'class='btn btn-primary' role='button' href='http://dvrpc.dvrpcgis.opendata.arcgis.com/datasets/c614fd0ae78a4aeaad319ad2e1007cbf_0?uiTab=table&where=MUN_NAME&#43like&#43"+
           (props.MUN_NAME)+"&filterByExtent=false&geometry="+(props.MIN_Y)+"%2C"+(props.MIN_X)+"%2C"+ (props.MAX_Y)+"%2C"+(props.MAX_X)+"' target='_blank'>Download Dataset</a>" 
           ;
+       */   
 
-  document.getElementById('infosidebar').innerHTML = content;
-  document.getElementById('download_button').innerHTML = content2;
+        //  document.getElementById('infosidebar').innerHTML = content;
+         // document.getElementById('download_button').innerHTML = content2;
           
-  Population = [props.Single_fam,props.Multi,props.Commercial,props.Comm_ser,props.Industrial,props.Transporta,props.Utility,props.Mining,props.Military,props.Recreation,props.Agr_bog,props.Wooded,props.Vacant,props.Water];
-  updateCtyChart(Population);   
+  Retail = [props.CIVIC, props.CULT, props.FB, props.GAFO, props.NGS, props.NONREOFF, props.RESIDE, props.VACANT];
+  Retail2 = [props.CIVIC, props.CULT, props.FB, props.GAFO, props.NGS, props.NONREOFF, props.RESIDE, props.VACANT];
+  
+  updateRetailChart(Retail); 
+  updateRetailChart2(Retail2);   
           
-  function updateCtyChart(Values){
-    var CtyChart = {
-
-            chart: {
-                renderTo: 'Population',
-                type:'pie',
-                plotBackgroundColor: null,
-                plotBorderWidth: 0, //null,
-                plotShadow: true,
-                height: 350,
-                width: 290,
-                colors: ['#FFFF00', '#FFA77F','#FF0000','#BEE8FF','#AA66CD','#686868','#FFBEBE','#A80000','#0084A8','#E6E600','#D7D79E','#4CE600','#A5F57A','#00C5FF']
-        /*   events: {
-            load: function(event) {
-              var total = 0;
-                for(var i=0, len=this.series[0].yData.length; i<len; i++){
-                    total += this.series[0].yData[i];
-                //    +Highcharts.numberFormat(this.point.y,0,',',',')+
-                }
-              var text = this.renderer.text(
-                total + '</br> Acres',135,135
-            //    this.plotTop - 1
-            ).attr({
-                zIndex: 5
-            }).add()
-            }
-              } */
-            },
-         title: {
-          text: null
-          //  text: '2015 Land Use by Acre',
-          //  align: 'center',
-          //  y: -50,
-          //  verticalAlign: 'middle',
-          //    style: {
-          //          fontSize: '9.5px'
-          //  }
-        }, 
-
-           plotOptions: {
-                pie: {
-                  //  allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                          enabled: false
-                        //  enabled:true,
-                        //   style: '{text-align: center}',
-                      //  verticalAlign: 'middle',
-                      //  distance: 20,
-                     //   format: '<span>{point.percentage:.0f} %</span>',
-                    },
-                    showInLegend: true
-                }
-            },
-          legend: {
-             title: {
-                text: '<span style="text-align:center;font-size: 9px; color: #666; font-weight: normal">DVRPC 2010 Landuse Categories</span>',
-                style: {
-                    fontStyle: 'italic'
-                }
-            },
-          layout:'horizontal'
+  function updateRetailChart(Values){
+    var RetailChart = {
+        chart: {
+            renderTo: 'Chart1',
+            type:'pie',
+            plotBackgroundColor: null,
+            plotBorderWidth: 0, //null,
+            plotShadow: true,
+            height: 200,
+            width: 300,
+            colors: ['#FFFF00', '#FFA77F','#FF0000','#BEE8FF','#AA66CD','#686868','#FFBEBE','#A80000']
         },
+        title: {
+          text: null
+        }, 
+        plotOptions: {
+          pie: {
+            //  allowPointSelect: true,
+            cursor: 'pointer',
+            point:{
+              events : {
+                legendItemClick: function(e){
+                e.preventDefault();
+                }
+                }
+            },
+            dataLabels: {
+              //   enabled: false
+                enabled:true,
+                style: '{text-align: center}',
+                verticalAlign: 'middle',
+                distance: 5,
+                format: '<span>{point.percentage:.0f} %</span>',
+                filter: {
+                property:'percentage',
+                operator: '>',
+                value: '8'
+                },
+            },
+            showInLegend: false
+            }
+          },
         tooltip: {
             formatter:function(){
               //  return '<b>'+Highcharts.numberFormat(this.point.y,0,',',',')+' Acres</b><br/>';
-                return '<b>'+this.point.name +'</b><br/>'+Highcharts.numberFormat(this.point.y,0,',',',')+' Acres<br/>'+Highcharts.numberFormat(this.percentage, 2)+' %';
+                return '<b>'+this.point.name +'</b><br/>'+Highcharts.numberFormat(this.percentage, 2)+' %';
             }
-            },
-            credits: {
-                enabled: false
-            },
-            series: [{
-               name:'Total',
-               id: 'Values',
-               innerSize: '60%',
-               colors: ['#FFFF00', '#FFA77F','#FF0000','#BEE8FF','#AA66CD','#686868','#FFBEBE','#A80000','#0084A8','#E6E600','#D7D79E','#4CE600','#A5F57A','#00C5FF'],
-               data: []
-            }]
+        },
+        credits: {
+          enabled: false
+        },
+        series: [{
+          name:'Total',
+          id: 'Values',
+          innerSize: '40%',
+          colors: ['#FFFF00', '#FFA77F','#FF0000','#BEE8FF','#AA66CD','#686868','#FFBEBE','#A80000'],
+          data: []
+        }]
     };    
-    var Labels = ["Single Family", "Multi Family","Commercial","Community Services","Industrial","Transportation","Utility","Mining","Military","Recreation", "Agricultural","Wooded","Vacant","Water"],
+    var Labels = ["Civic", "Cultural","Food & Beverage","GAFO","NG & S","Office","Residential","Vacant"],
     counData = [];
     for (var i = 0; i < Values.length; i++){
                 counData.push({
                     name: Labels[i],
                     y: Values[i]})
             }
-    CtyChart.series[0].data = counData;
-    var chart2 = new Highcharts.Chart(CtyChart)
-
+    RetailChart.series[0].data = counData;
+    var chart2 = new Highcharts.Chart(RetailChart)
     }
-
+  // start second chart
+  function updateRetailChart2(Values){
+    var RetailChart2 = {
+        chart: {
+            renderTo: 'Chart2',
+            type:'pie',
+            plotBackgroundColor: null,
+            plotBorderWidth: 0, //null,
+            plotShadow: true,
+            height: 200,
+            width: 300,
+            colors: ['#FFFF00', '#FFA77F','#FF0000','#BEE8FF','#AA66CD','#686868','#FFBEBE','#A80000']
+        },
+        title: {
+          text: null
+        }, 
+        plotOptions: {
+          pie: {
+            //  allowPointSelect: true,
+            cursor: 'pointer',
+            point:{
+              events : {
+                legendItemClick: function(e){
+                e.preventDefault();
+                }
+                }
+            },
+            dataLabels: {
+              //   enabled: false
+                enabled:true,
+                style: '{text-align: center}',
+                verticalAlign: 'middle',
+                distance: 5,
+                format: '<span>{point.percentage:.0f} %</span>',
+                filter: {
+                property:'percentage',
+                operator: '>',
+                value: '8'
+                },
+            },
+            showInLegend: false
+            }
+          },
+      /*  legend: {
+          title: {
+              text: '<span style="text-align:center;font-size: 9px; color: #666; font-weight: normal">Retail Mix 2015</span>',
+              style: {
+                    fontStyle: 'italic'
+              }
+            },
+          layout:'horizontal'
+        }, */
+        tooltip: {
+            formatter:function(){
+              //  return '<b>'+Highcharts.numberFormat(this.point.y,0,',',',')+' Acres</b><br/>';
+                return '<b>'+this.point.name +'</b><br/>'+Highcharts.numberFormat(this.percentage, 2)+' %';
+            }
+        },
+        credits: {
+          enabled: false
+        },
+        series: [{
+          name:'Total',
+          id: 'Values',
+          innerSize: '40%',
+          colors: ['#FFFF00', '#FFA77F','#FF0000','#BEE8FF','#AA66CD','#686868','#FFBEBE','#A80000'],
+          data: []
+        }]
+    };    
+    var Labels = ["Civic", "Cultural","Food & Beverage","GAFO","NG & S","Office","Residential","Vacant"],
+    counData = [];
+    for (var i = 0; i < Values.length; i++){
+                counData.push({
+                    name: Labels[i],
+                    y: Values[i]})
+            }
+    RetailChart2.series[0].data = counData;
+    var chart4 = new Highcharts.Chart(RetailChart2)
+    }  
   };
 </script>
 
